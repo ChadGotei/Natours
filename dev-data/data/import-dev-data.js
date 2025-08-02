@@ -1,26 +1,23 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 import connectDB from "../../db/index.js";
 import { Tour } from "../../models/tour.model.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: './config.env' });
-
 // Connect to DB
 await connectDB();
 
 // Read JSON file
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 //? Import Data to DB
 const importData = async () => {
     try {
         await Tour.create(tours);
-        console.log("Data inserted successfully!!");
+        console.log("📅 Data inserted successfully!!");
         process.exit();
     } catch (error) {
         console.error(error);

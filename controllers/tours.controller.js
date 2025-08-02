@@ -26,8 +26,10 @@ export const getAllTours = catchAsync(async (req, res, next) => {
     )
 });
 
+// get a single tour by its id
 export const getTour = catchAsync(async (req, res, next) => {
     const { id } = req.params;
+
     const tour = await Tour.findById(id);
 
     if (!tour) {

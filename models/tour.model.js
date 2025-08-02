@@ -8,7 +8,7 @@ const tourSchema = new mongoose.Schema({
         unique: true,
         trim: true,
         maxlength: [40, 'A tour name must have at most 40 characters'],
-        minlength: [10, 'A tour name must have at least 10 characters'], 
+        minlength: [10, 'A tour name must have at least 10 characters'],
     },
     slug: String,
     duration: {
@@ -71,8 +71,40 @@ const tourSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    startDates: [String]
+    startDates: [String],
     //? startDate: different dates a particular tour starts, instances of the tour starting at the different types
+    startLocation: {
+        // GeoJSON
+        type: {
+            type: String,
+            default: 'Point',
+            enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String
+    },
+
+    // embedded documents
+    locations: [
+        {
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point']
+            },
+            address: String,
+            description: String,
+            day: Number,
+            coordinates: [Number]
+        }
+    ],
+    guides: [
+        {
+            type: mongoose.Schema.ObjectId,
+            ref: 'User'
+        }
+    ]
 },
     {
         timestamps: true,
@@ -88,8 +120,12 @@ tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
 
-// tourSchema.virtual('discountedPrice').get(function() {
-//     return this.price - (this.priceDiscount ?? 0);
+// responsible for performing embedding
+// tourSchema.pre('save', async function (next) {
+//     const guidesPromises = this.guides.map(async id => await User.findById(id));
+//     this.guides = await Promise.all(guidesPromises);
+
+//     next();
 // })
 
 //? Document middlewares
@@ -107,12 +143,14 @@ tourSchema.pre(/^find/, function (next) {
     next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {
-    // the docs here is used to access the current document
-    console.log(`Query took ${new Date() - this.start} milliseconds!`);
-    next();
-});
+tourSchema.pre(/^find/, function(next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -createdAt -updatedAt'
+    });
 
+    next();
+})
 
 //? Aggregation Middlewares
 tourSchema.pre('aggregate', function (next) {

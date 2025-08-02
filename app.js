@@ -20,7 +20,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 //* MIDDLEWARES
-// Set security HTTP header
+// Set security HTTP header 
 app.use(helmet());
 
 // body parser, reading data etc
