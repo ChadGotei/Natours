@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import userRoute from './routes/user.routes.js';
 import tourRoute from './routes/tour.routes.js';
 import authRoute from './routes/auth.routes.js';
+import reviewRoute from "./routes/review.routes.js";
 import AppError from './utils/appError.js';
 import globalErrorHandler from './controllers/errors.controller.js';
 import rateLimit from 'express-rate-limit';
@@ -54,6 +55,7 @@ app.use('/api', limiter);    // applies to /api
 app.use('/api/v1/tours', tourRoute);
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/user', userRoute);
+app.use("/api/v1/review", reviewRoute);
 
 app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on the server!`, 404));

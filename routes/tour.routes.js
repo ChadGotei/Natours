@@ -10,10 +10,14 @@ import {
     getMonthlyPlan
 } from '../controllers/tours.controller.js';
 import { protect, restrictTo } from '../controllers/auth.controller.js';
+import reviewRoute from './review.routes.js'
 
 const router = express.Router();
 
 router.route('/top-5-cheap').get(aliasTopTour, getAllTours);
+
+// if we get something like tours/2312de/review then send that to reviewRoute
+router.use("/:tourId/review", reviewRoute);
 
 router
     .route('/tour-stats')

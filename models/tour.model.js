@@ -120,6 +120,13 @@ tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
 
+//? Virtual populate
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tourId',
+    localField: '_id'
+})
+
 // responsible for performing embedding
 // tourSchema.pre('save', async function (next) {
 //     const guidesPromises = this.guides.map(async id => await User.findById(id));
