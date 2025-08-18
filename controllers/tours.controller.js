@@ -2,6 +2,7 @@ import { Tour } from "../models/tour.model.js";
 import { APIfeatures } from "../utils/APIfeatures.js";
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import factory from "./handlerFactory.js";
 
 export const getAllTours = catchAsync(async (req, res, next) => {
     //? Adding api features meow
@@ -26,19 +27,6 @@ export const getAllTours = catchAsync(async (req, res, next) => {
     )
 });
 
-// get a single tour by its id
-export const getTour = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-
-    const tour = await Tour.findById(id).populate('reviews')
-
-    if (!tour) {
-        return next(new AppError(`No tour found with that ID`, 404));
-    };
-
-    return res.status(200).json(tour);
-});
-
 export const aliasTopTour = (req, res, next) => {
     req.query.limit = 5;
     req.query.sort = '-ratingsAverage,price';
@@ -46,47 +34,26 @@ export const aliasTopTour = (req, res, next) => {
     next();
 }
 
-export const createTour = catchAsync(async (req, res, next) => {
-    const newTour = await Tour.create(req.body);
-    res.status(201).json({
-        status: 'success',
-        data: {
-            tour: newTour,
-        },
-    });
-})
+// get a single tour by its id
+// export const getTour = catchAsync(async (req, res, next) => {
+//     const { id } = req.params;
 
-export const updateTour = catchAsync(async (req, res, next) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true
-    });
+//     const tour = await Tour.findById(id).populate('reviews')
 
-    return res.status(200).json({
-        status: "success",
-        data: {
-            tour
-        }
-    })
-});
+//     if (!tour) {
+//         return next(new AppError(`No tour found with that ID`, 404));
+//     };
 
-export const deleteTour = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const tour = await Tour.findByIdAndDelete(id).select("name duration imageCover summary");
+//     return res.status(200).json(tour);
+// });
 
-    if (!tour) {
-        return next(new AppError('No tour found with that ID', 404));
-    }
+export const getTour = factory.getOne(Tour, { path: 'reviews' });
 
-    console.log(`Tour named ${tour.name} deleted successfully!`);
-    return res.status(200).json({
-        status: "Success",
-        deleted_tour: {
-            tour
-        }
-    });
-});
+export const createTour = factory.createOne(Tour);
 
+export const updateTour = factory.updateOne(Tour);
+
+export const deleteTour = factory.deleteOne(Tour);
 
 export const getTourStats = catchAsync(async (req, res, next) => {
     const stats = await Tour.aggregate([

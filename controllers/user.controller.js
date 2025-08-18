@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import AppError from "../utils/appError.js";
 import catchAsync from "../utils/catchAsync.js";
 import { filterObj } from '../utils/helper.js';
+import factory from '../controllers/handlerFactory.js';
 
 export const getAllUsers = catchAsync(async (req, res, next) => {
     const users = await User.find();
@@ -47,28 +48,10 @@ export const deleteMe = catchAsync(async (req, res, next) => {
     })
 })
 
-export const deleteUser = catchAsync(async (req, res, next) => {
-    const { id } = req.params;
-    const deletedUser = await User.findByIdAndDelete(id);
+export const deleteUser = factory.deleteOne(User);
 
-    if (!deletedUser) {
-        return next(new AppError("Please provide a valid ID", 401));
-    }
+export const getUser = factory.getOne(User);
 
-    res.status(200).json({
-        status: "User deleted successfully!",
-        data: {
-            deletedUser
-        }
-    });
-})
-
-export const getUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined'
-    });
-};
 
 // this is for the administrator
 export const updateUser = (req, res) => {

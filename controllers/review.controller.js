@@ -1,5 +1,10 @@
 import catchAsync from "../utils/catchAsync.js";
 import { Review } from "../models/review.model.js";
+import handlerFactory from "./handlerFactory.js";
+
+const deleteReview = handlerFactory.deleteOne(Review);
+const updateReview = handlerFactory.updateOne(Review);
+const getReview = handlerFactory.getOne(Review);
 
 const getAllReviews = catchAsync(async (req, res, next) => {
     let filter = {};
@@ -28,4 +33,4 @@ const createReview = catchAsync(async (req, res, next) => {
     })
 })
 
-export { createReview, getAllReviews }
+export { createReview, getAllReviews, deleteReview, updateReview, getReview }

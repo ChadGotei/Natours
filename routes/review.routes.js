@@ -1,5 +1,5 @@
 import express from "express";
-import { createReview, getAllReviews } from "../controllers/review.controller.js";
+import { createReview, deleteReview, getAllReviews, getReview, updateReview } from "../controllers/review.controller.js";
 import { protect, restrictTo } from "../controllers/auth.controller.js";
 
 const router = express.Router({ mergeParams: true });
@@ -7,6 +7,11 @@ const router = express.Router({ mergeParams: true });
 
 router.route("/")
     .get(getAllReviews)
-    .post(protect, restrictTo("user", "admin"), createReview);
+    .post(protect, restrictTo("user", "admin"), createReview)
+
+router.route("/:id")
+    .delete(deleteReview)
+    .get(getReview)
+    .patch(protect, restrictTo("user", "admin"), updateReview)
 
 export default router
