@@ -4,6 +4,7 @@ import { protect } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
+router.get('/me', protect, userController.getMe, userController.getUser);
 router.patch('/update-me', protect, userController.updateMe);
 router.delete('/delete-me', protect, userController.deleteMe);
 

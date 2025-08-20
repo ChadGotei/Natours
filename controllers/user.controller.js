@@ -52,6 +52,12 @@ export const deleteUser = factory.deleteOne(User);
 
 export const getUser = factory.getOne(User);
 
+export const getMe = (req, res, next) => {
+    req.params.id = req.user.id;
+
+    next();
+}
+
 
 // this is for the administrator
 export const updateUser = (req, res) => {
