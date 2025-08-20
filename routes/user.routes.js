@@ -1,6 +1,6 @@
 import express from 'express';
 import * as userController from '../controllers/user.controller.js';
-import { protect } from '../controllers/auth.controller.js';
+import { protect, restrictTo } from '../controllers/auth.controller.js';
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router
 
 router
     .route('/')
-    .get(userController.getAllUsers)
+    .get(protect, restrictTo('admin'), userController.getAllUsers)
     .post(userController.createUser);
 
 

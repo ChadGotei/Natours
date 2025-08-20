@@ -33,7 +33,7 @@ router
 
 router
     .route('/')
-    .get(protect, getAllTours)
-    .post(createTour);
+    .get(getAllTours)
+    .post(protect, restrictTo('admin', 'lead-guide') ,createTour);
 
 export default router;
